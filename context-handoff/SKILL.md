@@ -1,48 +1,57 @@
 ---
 name: context-handoff
-description: Create a compact handoff document when a coding-agent session is large, slow, or expensive but unfinished work must continue fresh. Captures goal, decisions, files touched, exact next step, and gotchas. Triggers include "上下文太满", "上下文太贵", "交接一下", "新开会话继续", "接着干", "handoff", "baton pass".
+description: Create a compact handoff document when a coding-agent session is large, slow, or expensive but unfinished work must continue in a fresh session. Captures the goal, completed work, decisions, touched files, exact next step, and gotchas. Triggers include "handoff", "baton pass", "continue in a fresh session", "context is too large", "write a session handoff".
 ---
 
-# Context Handoff — 上下文交接
+# Context Handoff
 
-把一段快满/变贵的会话浓缩成一份交接文档，让新会话读一遍就能接着干。产物是便携 Markdown 文件，不依赖外部脚本或平台私有功能。
+Use this skill when the session is too heavy, but the work still needs to continue.
 
-## 怎么做
+Write a small Markdown handoff. The next agent should be able to read it once and start working.
 
-1. **确认落盘位置。** 默认写到当前工作目录的 `HANDOFF.md`（新会话在同目录能直接读到）。若无写入权限或用户另有指定，写到 scratchpad 或用户给的路径，并把路径告诉用户。
-2. **按下面模板生成文档。** 只写「继续干活真正需要的信息」，不复述整段对话历史——那正是要省掉的 token。代码/路径/命令原样保留，不要压缩成模糊描述。
-3. **给出接力指令。** 告诉用户在新会话里说一句：`读一下 HANDOFF.md，从"下一步"接着干`。
+## Steps
 
-## 交接文档模板
+1. Write to `HANDOFF.md` in the current working directory unless the user asks for another path.
+2. Include only what the next session needs.
+3. Keep exact paths, commands, errors, versions, and constraints.
+4. End with the next concrete action.
+5. After writing, report only the file path and the restart prompt.
 
-```markdown
-# 交接文档 — <一句话任务名>
-> 生成于 <日期>，上一棒会话
+Restart prompt:
 
-## 目标
-<这段工作最终要达成什么，一两句话>
-
-## 已完成
-- <关键进展 1（含具体文件/函数/结论）>
-- <关键进展 2>
-
-## 关键决策与约束
-- <为什么选 A 不选 B；踩过的坑；不能碰的东西>
-
-## 涉及的文件
-- `path/to/file` — <改了什么 / 为什么相关>
-
-## 下一步（接力从这里开始）
-1. <非常具体的下一个动作，能直接执行>
-2. <再下一步>
-
-## 注意事项 / 坑
-- <环境、依赖、边界条件、验证命令等>
+```text
+Read HANDOFF.md and continue from "Next Step".
 ```
 
-## 原则
+## Template
 
-- **只留必要信息。** 交接文档本身也要省 token——它是给下一棒看的工作现场，不是会议纪要。
-- **可执行优先。** 「下一步」要具体到能直接动手，避免下一棒重新摸索。
-- **别丢硬信息。** 文件路径、命令、报错原文、版本号照抄，别改写成概述。
-- 写完只报告落盘路径和接力指令，不复述文档全文。
+```markdown
+# Handoff: <task name>
+
+Generated: <date>
+
+## Goal
+<What the work is trying to achieve. 1-2 sentences.>
+
+## Done
+- <Concrete progress, with files/functions/results.>
+
+## Decisions
+- <Important choices, constraints, and why they matter.>
+
+## Files
+- `path/to/file` - <why it matters>
+
+## Next Step
+1. <The exact next action.>
+2. <The action after that, if obvious.>
+
+## Gotchas
+- <Known failures, environment notes, commands to run, tests still needed.>
+```
+
+## Quality Bar
+
+- Short enough to paste into a new session.
+- Specific enough that the next agent does not rediscover the same facts.
+- No meeting notes. No vague summaries. No full transcript.
