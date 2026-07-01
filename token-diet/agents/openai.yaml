@@ -1,0 +1,4 @@
+interface:
+  display_name: "Token Diet"
+  short_description: "Reduce coding-agent token waste"
+  default_prompt: "Use $token-diet to reduce my coding agent token usage."

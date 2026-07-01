@@ -1,19 +1,11 @@
 ---
 name: context-handoff
-description: Use when an AI coding agent session's context has grown large, slow, or expensive and the user wants to continue the same work in a fresh session without losing state. Generates a structured handoff (交接) document — current goal, key decisions, files touched, exact next step, and gotchas — so a new session resumes seamlessly. Triggers include "上下文太满", "上下文太贵", "交接一下", "新开会话继续", "接着干", "baton pass", "handoff", "context is getting expensive", "compact 不好用".
+description: Create a compact handoff document when a coding-agent session is large, slow, or expensive but unfinished work must continue fresh. Captures goal, decisions, files touched, exact next step, and gotchas. Triggers include "上下文太满", "上下文太贵", "交接一下", "新开会话继续", "接着干", "handoff", "baton pass".
 ---
 
 # Context Handoff — 上下文交接
 
-把一段快满/变贵的会话浓缩成一份交接文档，让新会话读一遍就能无缝接着干。等于把「长对话总结 + 新开会话」做成一个可复用动作。灵感来自 `baton-pass` / Matt Pocock 的 handoff 思路，这里是**手动按需触发**的自包含版本，不依赖任何外部脚本或二进制。
-
-## 什么时候用
-
-- `/context` 显示上下文占用高，或对话明显变慢、变贵。
-- 当前任务还没做完，但想换个干净会话继续。
-- 用户说要「新开会话继续」「交接」「接着干」。
-
-判断标准：如果新任务和当前进度**必须互相引用**才能继续，就该交接（而不是简单 `/clear` 丢掉）。
+把一段快满/变贵的会话浓缩成一份交接文档，让新会话读一遍就能接着干。产物是便携 Markdown 文件，不依赖外部脚本或平台私有功能。
 
 ## 怎么做
 

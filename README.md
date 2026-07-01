@@ -1,10 +1,10 @@
 # claude-token-skills
 
-两个给 AI 编码助手省 Token 的 Claude Code 技能（Agent Skills）。
-Two token-saving skills for Claude Code (Agent Skills).
+两个给 AI 编码助手省 Token 的技能（Agent Skills）。
+Two token-saving skills for AI coding agents.
 
-它们都是自包含的：只有一份 `SKILL.md`，没有脚本、二进制或外部依赖。
-Both are self-contained: a single `SKILL.md` each, no scripts, binaries, or external dependencies.
+它们都是自包含的：核心是一份 `SKILL.md`，另带可选 `agents/openai.yaml` 元数据；没有脚本、二进制或外部依赖。
+Both are self-contained: one core `SKILL.md` plus optional `agents/openai.yaml` metadata, with no scripts, binaries, or external dependencies.
 
 ## 技能 / Skills
 
@@ -16,9 +16,9 @@ Fires when a session's context has grown large or expensive but the task isn't d
 触发词 / Triggers: `交接一下`, `上下文太满`, `新开会话继续`, `接着干`, `baton pass`, `handoff`, `context is getting expensive`.
 
 ### `token-diet` — 省 Token 落地清单
-用户想降低 token / 成本、频繁触及用量上限、或想要一套省 token 的工作规则时触发。给出按优先级排的可执行清单：先用 `/context` 诊断，再依次做上下文卫生、约束输出、模型分级、精准喂上下文，最后才是可选的外部工具。还能在用户同意后把常驻规则写进 `CLAUDE.md`。
+用户想降低 token / 成本、频繁触及用量上限、或想要一套省 token 的工作规则时触发。给出按优先级排的可执行清单：先诊断上下文大头，再依次做上下文卫生、约束输出、模型分级、精准喂上下文，最后才是可选的工具层脱水。还能在用户同意后把常驻规则写进项目指令文件。
 
-Fires when the user wants to cut token/cost usage, keeps hitting limits, or wants token-efficient working rules. Provides a prioritized playbook: diagnose with `/context`, then context hygiene, output constraints, model tiering, precise context feeding, and optional external tools. Can write always-on rules into `CLAUDE.md` on request.
+Fires when the user wants to cut token/cost usage, keeps hitting limits, or wants token-efficient working rules. Provides a prioritized playbook: diagnose context bloat, then context hygiene, output constraints, model tiering, precise context feeding, and optional tool trimming. Can write always-on rules into project instruction files on request.
 
 触发词 / Triggers: `省 token`, `token 太贵`, `用量上限`, `怎么少烧 token`, `reduce token usage`, `save tokens`.
 
@@ -33,6 +33,15 @@ cp -R claude-token-skills/context-handoff ~/.claude/skills/
 cp -R claude-token-skills/token-diet ~/.claude/skills/
 ```
 
+Codex 可放到 `~/.codex/skills/`：
+For Codex, place them under `~/.codex/skills/`:
+
+```bash
+mkdir -p ~/.codex/skills
+cp -R claude-token-skills/context-handoff ~/.codex/skills/
+cp -R claude-token-skills/token-diet ~/.codex/skills/
+```
+
 或者用软链接，便于随仓库更新：
 Or symlink, to stay in sync with the repo:
 
@@ -41,13 +50,16 @@ ln -s "$(pwd)/claude-token-skills/context-handoff" ~/.claude/skills/context-hand
 ln -s "$(pwd)/claude-token-skills/token-diet" ~/.claude/skills/token-diet
 ```
 
-装好后重开一个 Claude Code 会话，说一句 `帮我交接一下` 或 `帮我省点 token` 即可触发。
-Restart a Claude Code session, then say something like `帮我交接一下` or `help me save tokens` to trigger.
+把目标目录换成 `~/.codex/skills/` 即可用于 Codex。
+Replace the target directory with `~/.codex/skills/` for Codex.
+
+装好后重开会话，说一句 `帮我交接一下` 或 `帮我省点 token` 即可触发。
+Restart the session, then say something like `帮我交接一下` or `help me save tokens` to trigger.
 
 ## 设计原则 / Design
 
-两个技能都遵循 Claude Skills 的「渐进披露」原则：`description` 只写触发条件、`SKILL.md` 正文精简（各 60 行内）、确定性操作给模板而非长篇说明。技能本身也要省 token。
-Both follow Claude Skills' progressive-disclosure principle: `description` states only when to trigger, the `SKILL.md` body stays lean (under 60 lines each), and deterministic steps ship as templates rather than prose. The skills themselves are token-frugal.
+两个技能都遵循 Agent Skills 的「渐进披露」原则：`description` 只写触发条件、`SKILL.md` 正文精简、确定性操作给模板而非长篇说明。技能本身也要省 token。
+Both follow Agent Skills' progressive-disclosure principle: `description` focuses on trigger conditions, the `SKILL.md` body stays lean, and deterministic steps ship as templates rather than prose. The skills themselves are token-frugal.
 
 ## 来源 / Provenance
 
